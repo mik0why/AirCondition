@@ -6,6 +6,8 @@ import numpy as np
 import os
 import threading
 import datetime
+import time
+import psutil
 
 def get_key():
 	key_file = open("key.txt")
@@ -72,7 +74,7 @@ def color_image(isFirst, code, color) :
    	ImageDraw.floodfill(im, xy=det_pos(code), value=color)
    	im.save("modified_image.png")
 
-   	os.system('clear')
+   	os.system('clear') #clearing the screen
    	print str(code/float(32)* 100) +  " %" #wipe out the prev percentage
    	return
 def set_color(qual_val, vals):
@@ -107,7 +109,8 @@ def add_labels(vals):
 	im.save("modified_image.png")
 def call_methods():
 	#the actual execution of the program loop
-	threading.Timer(60.0, call_methods).start()
+	#threading.Timer(60.0, call_methods).start()
+
 	counter = 0
 	values = [30,35,40,50,60]
 	color_image(0, 2,set_color(get_average(50.229722,14.816667,51.3,17.204722), values)) #dsln
@@ -127,9 +130,24 @@ def call_methods():
 	color_image(1, 30, set_color(get_average( 51.52624386672461, 16.305484426065646, 53.12541587605423418, 18.301106695225065), values))#wlkp
 	color_image(1, 32, set_color(get_average(52.614789312582616, 14.076508253072798 , 54.58174066414152, 16.5988760639136), values))#zach-pom
 	add_labels(values)
+	for proc in psutil.process_iter():
+		print "Process: {}, id: {}".format(proc.name(), proc.ppid())
+	  	if proc.name() == "Preview":
+	    		proc.kill()
+
 	im = Image.open("modified_image.png")
 	im.show()
-call_methods()
+	print "a"
+	print os.getpid()
+	x = os.getpid()
+	#print proc.name()
+
+
+minute = 0
+while minute < 10:
+	call_methods()
+	time.sleep(50)
+	minute = minute + 1
 #still need to close an image once displayed
 #ed45c2573a811b8a94bee86f37c8c0419257caf3
 #https://www.wspolrzedne.pl
