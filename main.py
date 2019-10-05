@@ -8,12 +8,11 @@ import threading
 import datetime
 import time
 import psutil
+import sys
 
 def get_key():
 	key_file = open("key.txt")
 	return key_file.readline().rstrip()
-
-
 def get_average(lat1, long1, lat2, long2):
 	#Getting an average air quality value in a region bounded by four points
 	counter = 0 
@@ -68,7 +67,7 @@ def color_image(isFirst, code, color) :
 		col_fill[i] = color[i]
 
 	if isFirst == 0:
-		im = Image.open("2867.png") #change: need to specify file
+		im = Image.open("2867.png")
 	else:
 		im = Image.open("modified_image.png")
    	ImageDraw.floodfill(im, xy=det_pos(code), value=color)
@@ -94,8 +93,7 @@ def set_color(qual_val, vals):
 
 	return value
 def add_labels(vals):
-	#adds labels to the image color description.
-	#can be further extended by specifying the designated colors here
+	#adds labels to the image color description
 	im = Image.open("modified_image.png")
 	draw = ImageDraw.Draw(im)
 	draw.text((60,8), "Average Air Quality Value in Each Region of Poland", fill = (0,0,0))
@@ -107,9 +105,7 @@ def add_labels(vals):
 	draw.text((122,340), "<", fill = (0,0,0))
 	draw.text((20, 387), "last updated: " + str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")), fill = (0,0,0))
 	im.save("modified_image.png")
-def call_methods():
-	#the actual execution of the program loop
-	#threading.Timer(60.0, call_methods).start()
+def call_methods(): #the actual execution of the program loop
 
 	counter = 0
 	values = [30,35,40,50,60]
@@ -131,25 +127,34 @@ def call_methods():
 	color_image(1, 32, set_color(get_average(52.614789312582616, 14.076508253072798 , 54.58174066414152, 16.5988760639136), values))#zach-pom
 	add_labels(values)
 	for proc in psutil.process_iter():
-		print "Process: {}, id: {}".format(proc.name(), proc.ppid())
+	#	print "Process: {}, id: {}".format(proc.name(), proc.ppid())
 	  	if proc.name() == "Preview":
 	    		proc.kill()
 
 	im = Image.open("modified_image.png")
 	im.show()
-	print "a"
-	print os.getpid()
-	x = os.getpid()
-	#print proc.name()
+
 
 
 minute = 0
-while minute < 10:
+try:
+	update_freq = sys.argv[1]
+except IndexError:
+	update_freq = 50
+
+
+try:
+	time_ex = sys.argv[2]
+except IndexError:
+	time_ex = 3600
+
+
+
+
+print "frequency: {}, execution time: {}".format(update_freq, time_ex)
+
+
+while minute < time_ex:
 	call_methods()
-	time.sleep(50)
+	time.sleep(float(update_freq))
 	minute = minute + 1
-#still need to close an image once displayed
-#ed45c2573a811b8a94bee86f37c8c0419257caf3
-#https://www.wspolrzedne.pl
-#http://aqicn.org/city/poland/swietokrzyski/polaniec/
-# a potential next step would be to add a possibility to define a color range manually
