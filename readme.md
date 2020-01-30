@@ -15,5 +15,4 @@ The main.py function is invoked with two parameters which specify:
 <br> In order to terminate the execution, terminate the process with ctrl + z.
 
 ## Preview
-
-![Alt text](screenshot.png = 250x250)
+<img src = "screenshot.png" width = 500>
