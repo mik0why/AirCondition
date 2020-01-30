@@ -16,4 +16,4 @@ The main.py function is invoked with two parameters which specify:
 
 ## Preview
 
-![Alt text](screenshot.jpg "Title")
+![Alt text](screenshot.png = 250x250)
